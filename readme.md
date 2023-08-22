@@ -1,12 +1,14 @@
-Built following guide on
+Built following guides
+
 https://modding.wiki/en/dinkum
+
 https://modding.wiki/en/dinkum/DinkumTutorialBuildEnvironment
 
 Harmony patching info from
+
 https://harmony.pardeike.net/articles/patching-postfix.html
 
-Care with the references in csproj - 
-There is an absolute ref in there that needs updating to match the game directory location.
+If working with the repo update the Bepinex and game path references in .csproj 
 
 To compile, navigate to the project directory and run in a terminal window
 dotnet build
