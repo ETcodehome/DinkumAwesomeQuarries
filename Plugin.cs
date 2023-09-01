@@ -11,6 +11,7 @@ public class Plugin : BaseUnityPlugin
 
     public const int TILETYPE_ROCKY_RED_DESERT      = 18;
     public const int BIOMETYPE_ROUGH_SOIL           = 12;
+    public const int BIOMETYPE_BUNYIP_DEN           = 14;
     public const string CONFIG_GENERAL              = "General";
     public const int UNITY_LEFT_CLICK               = 0;
     public const int UNITY_RIGHT_CLICK              = 1;
@@ -80,10 +81,17 @@ public class Plugin : BaseUnityPlugin
     {
         static void Postfix(int x, int y, ref int __result)
         {
+
+            // Don't change bunyip dens to rough soil or else it stops bush devil spawns
+            if (__result == BIOMETYPE_BUNYIP_DEN){
+                return;
+            }
+
             int tileType = WorldManager.manageWorld.tileTypeMap[x, y];
             if (tileType == TILETYPE_ROCKY_RED_DESERT){
                 __result = BIOMETYPE_ROUGH_SOIL;
             }
+
         }
     }
 
@@ -124,6 +132,11 @@ public class Plugin : BaseUnityPlugin
     {
 
         if (Input.GetMouseButtonDown(UNITY_RIGHT_CLICK)){
+
+            // Guard clause - Ensure player isn't in a menu
+            if (Inventory.inv.isMenuOpen()){
+                return;
+            }
 
             int invIndex = Inventory.inv.selectedSlot;
             int heldItem = Inventory.inv.invSlots[invIndex].itemNo;
