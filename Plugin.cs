@@ -87,7 +87,7 @@ public class Plugin : BaseUnityPlugin
                 return;
             }
 
-            int tileType = WorldManager.manageWorld.tileTypeMap[x, y];
+            int tileType = WorldManager.Instance.tileTypeMap[x, y];
             if (tileType == TILETYPE_ROCKY_RED_DESERT){
                 __result = BIOMETYPE_ROUGH_SOIL;
             }
@@ -106,9 +106,9 @@ public class Plugin : BaseUnityPlugin
         static void Postfix(int x, int y, float percentChance, InventoryItemLootTable useTable = null)
         {
             // x,y is actually x,z but for harmony purposes we have to override with identically named arguments
-            int tileType = WorldManager.manageWorld.tileTypeMap[x, y];
+            int tileType = WorldManager.Instance.tileTypeMap[x, y];
             if (tileType == TILETYPE_ROCKY_RED_DESERT){
-                WorldManager.manageWorld.onTileMap[x, y] = -1;
+                WorldManager.Instance.onTileMap[x, y] = -1;
             }
         }
     }
@@ -134,23 +134,23 @@ public class Plugin : BaseUnityPlugin
         if (Input.GetMouseButtonDown(UNITY_RIGHT_CLICK)){
 
             // Guard clause - Ensure player isn't in a menu
-            if (Inventory.inv.isMenuOpen()){
+            if (Inventory.Instance.isMenuOpen()){
                 return;
             }
 
-            int invIndex = Inventory.inv.selectedSlot;
-            int heldItem = Inventory.inv.invSlots[invIndex].itemNo;
-            int heldQty = Inventory.inv.invSlots[invIndex].stack;
+            int invIndex = Inventory.Instance.selectedSlot;
+            int heldItem = Inventory.Instance.invSlots[invIndex].itemNo;
+            int heldQty = Inventory.Instance.invSlots[invIndex].stack;
             int checkItem = _costItemID.Value;
             int checkQty = _costItemQuantity.Value;
 
             // Get the target tile location
-            int x = Mathf.RoundToInt(NetworkMapSharer.share.localChar.myInteract.tileHighlighter.transform.position.x / 2f);
-            int y = Mathf.RoundToInt(NetworkMapSharer.share.localChar.myInteract.tileHighlighter.transform.position.y / 2f);
-            int z = Mathf.RoundToInt(NetworkMapSharer.share.localChar.myInteract.tileHighlighter.transform.position.z / 2f);
+            int x = Mathf.RoundToInt(NetworkMapSharer.Instance.localChar.myInteract.tileHighlighter.transform.position.x / 2f);
+            int y = Mathf.RoundToInt(NetworkMapSharer.Instance.localChar.myInteract.tileHighlighter.transform.position.y / 2f);
+            int z = Mathf.RoundToInt(NetworkMapSharer.Instance.localChar.myInteract.tileHighlighter.transform.position.z / 2f);
             
             // check the different types involved
-            WorldManager WM = WorldManager.manageWorld;
+            WorldManager WM = WorldManager.Instance;
             int groundType = WM.tileTypeMap[x, z];
             int biomeType = GenerateMap.generate.checkBiomType(x, z);
             
@@ -162,8 +162,8 @@ public class Plugin : BaseUnityPlugin
 
             // Guard clause - Make sure we are holding the right item
             if (heldItem != checkItem){
-                string heldItemName = Inventory.inv.allItems[heldItem].getInvItemName();
-                string checkItemName = Inventory.inv.allItems[checkItem].getInvItemName();
+                string heldItemName = Inventory.Instance.allItems[heldItem].getInvItemName();
+                string checkItemName = Inventory.Instance.allItems[checkItem].getInvItemName();
                 Log("FAIL: Wrong item held expected " + checkItemName + "(ID " + checkItem +") found " + heldItemName + "(ID " + heldItem + ")");
                 return;
             }
@@ -191,15 +191,15 @@ public class Plugin : BaseUnityPlugin
             Log("Biome Type before change: " + biomeType.ToString());
 
             // Actually do the update of the tile type
-            NetworkMapSharer.share.RpcUpdateTileType(TILETYPE_ROCKY_RED_DESERT, x, z);
+            NetworkMapSharer.Instance.RpcUpdateTileType(TILETYPE_ROCKY_RED_DESERT, x, z);
 
             // subtract the cost item
-            Inventory.inv.invSlots[invIndex].stack -= checkQty;
-            Inventory.inv.invSlots[invIndex].refreshSlot();
+            Inventory.Instance.invSlots[invIndex].stack -= checkQty;
+            Inventory.Instance.invSlots[invIndex].refreshSlot();
             
             // Update player animation if stack is empty so they don't keep holding the consumed item
-            if (Inventory.inv.invSlots[invIndex].stack <= 0){
-                Inventory.inv.consumeItemInHand();
+            if (Inventory.Instance.invSlots[invIndex].stack <= 0){
+                Inventory.Instance.consumeItemInHand();
             }
 
         }

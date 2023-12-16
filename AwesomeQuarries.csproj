@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>psiber.awesome.quarries</AssemblyName>
     <Description>Awesome Quarries</Description>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <GameLibraryPath>C:\Program Files (x86)\Steam\steamapps\common\Dinkum\Dinkum_Data\Managed</GameLibraryPath>
